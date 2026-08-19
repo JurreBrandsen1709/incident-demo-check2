@@ -23,4 +23,20 @@ public class RecordStoreTests
 
         Assert.Equal(3, result.Count);
     }
+
+    [Fact]
+    public void GetRecordsForWindow_IncludesRecordsAtUpperBound()
+    {
+        var records = new List<Record>
+        {
+            new Record("r0", Utc(2026, 1, 1, 4), 10m),
+            new Record("r1", Utc(2026, 1, 2, 0), 10m),
+        };
+        var store = new RecordStore(records);
+
+        var result = store.GetRecordsForWindow(Utc(2026, 1, 1), Utc(2026, 1, 2));
+
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, r => r.Id == "r1");
+    }
 }
